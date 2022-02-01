@@ -1,0 +1,45 @@
+
+CREATE DATABASE IF NOT EXISTS home_page_angular CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+use home_page_angular;
+
+DROP TABLE IF EXISTS USERS;
+CREATE TABLE USERS (
+    id INTEGER AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) UNIQUE,
+    hashed_password VARCHAR(100)
+);
+
+DROP TABLE IF EXISTS LINKS;
+CREATE TABLE LINKS (
+    id INTEGER AUTO_INCREMENT UNIQUE,
+    type VARCHAR(5),
+    user_id INTEGER,
+    number_link INTEGER,
+    name VARCHAR(20),
+    url VARCHAR(500),
+    visible_url VARCHAR(500),
+    folder BOOLEAN NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS STORED_LINKS;
+CREATE TABLE STORED_LINKS (
+    id INTEGER AUTO_INCREMENT,
+    name VARCHAR(20),
+    folder_id INTEGER,
+    url VARCHAR(500),
+    visible_url VARCHAR(500),
+    PRIMARY KEY(id),
+    FOREIGN KEY (folder_id) REFERENCES LINKS(id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS PREFERENCES;
+CREATE TABLE PREFERENCES (
+    user_id  INTEGER,
+    preference_name VARCHAR(20),
+    value VARCHAR(20),
+    PRIMARY KEY(user_id, preference_name),
+    FOREIGN KEY (user_id) REFERENCES USERS(id) ON DELETE CASCADE
+);
