@@ -56,7 +56,7 @@ router.put('/', async (req, res) => {
     if (user) {
         res.status(200).json(user);
     } else {
-        res.status(500).json({ message: "Internal Server Error"})
+        res.status(500).json({ message: user})
     }
 
 });
@@ -78,3 +78,5 @@ router.delete('/', async (req, res) => {
         res.status(500).json({message: "Internal Server Error"});
     }
 });
+
+module.exports = router;

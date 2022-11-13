@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const db = require('./app/models');
+const db = require('./models');
 
 db.sequelize.sync().then(() => {
     console.log("Sync Database.");

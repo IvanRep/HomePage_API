@@ -65,12 +65,11 @@ router.post('/', async (req, res) => {
 
 });
 
-
-
 //Update a Tag
 router.put('/', async (req, res) => {
 
     const reqTag = {
+        id: req.body.tag.id,
         name: req.body.tag.name,
         selectedByDefault: req.body.tag.selectedByDefault,
         creationDate: req.body.tag.creationDate,
@@ -81,7 +80,7 @@ router.put('/', async (req, res) => {
         password: req.body.user.password,
     }
 
-    const tag = await TagController.update(reqTag, reqUser);
+    const tag = await TagController.update(reqUser, reqTag);
 
     if (tag) {
         res.status(200).json(tag);
@@ -114,3 +113,5 @@ router.delete('/', async (req, res) => {
         res.status(500).json({message: "Internal Server Error"});
     }
 });
+
+module.exports = router;

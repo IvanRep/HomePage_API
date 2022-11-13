@@ -45,7 +45,9 @@ exports.findAll = (user) => {
             where: {
                 userId: user.id
             },
-            order: ['name', 'DESC']
+            order: [
+                ['name', 'DESC']
+            ]
         })
         .then((tags) => {
             return tags;
@@ -196,7 +198,7 @@ exports.update = (user, tag) => {
     return User.findOne({
         where: {
             name: user.name,
-            password: password.name,
+            password: user.password,
         }
     })
     .then((user) => {
@@ -206,23 +208,17 @@ exports.update = (user, tag) => {
                 id: tag.id,
             }
         })
-        .then((oldTag) =>  {
+        .then(async (oldTag) =>  {
             if (!oldTag) {
                 console.error(">> Error, Tag not found");
                 return null;
             }
             oldTag.name = tag.name;
-            oldTag.url = tag.url;
-            oldTag.imageUrl = tag.imageUrl;
+            oldTag.selectedByDefault = tag.selectedByDefault;
             oldTag.creationDate = tag.creationDate;
 
-            oldTag.save()
-            .then((newTag) => {
-                return newTag;
-            })
-            .catch((err) => {
-                console.error(">> Error while saving Tag: ", err);
-            })
+            await oldTag.save();
+            return oldTag;
         })
         .catch((err) => {
             console.error(">> Error, Tag not found: ", err);
@@ -245,7 +241,6 @@ exports.destroy = (user, tag) => {
         return Tag.findOne({
             where: {
                 name: tag.name,
-                url: tag.url,
                 userId: user.id
             }
         })

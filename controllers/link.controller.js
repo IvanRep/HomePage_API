@@ -57,7 +57,9 @@ exports.findAll = (user) => {
             where: {
                 userId: user.id
             },
-            order: ['name', 'DESC']
+            order: [
+                ['name', 'DESC']
+            ]
         })
         .then((links) => {
             return links;
@@ -259,10 +261,6 @@ exports.setSomeTagsByName = (user, linkName, tagsNames) => {
                 },
             })
             .then((tags) => {
-                if (!tags) {
-                    console.error(">> Error, Tags not found");
-                    return null;
-                }
                 link.setTags(tags);
                 console.log(`>> Added ${tags.length} Tags to Link name=${link.name}`);
                 return link;
@@ -285,7 +283,7 @@ exports.update = (user, link) => {
     return User.findOne({
         where: {
             name: user.name,
-            password: password.name,
+            password: user.password,
         }
     })
     .then((user) => {
@@ -295,7 +293,7 @@ exports.update = (user, link) => {
                 id: link.id,
             }
         })
-        .then((oldLink) =>  {
+        .then(async (oldLink) =>  {
             if (!oldLink) {
                 console.error(">> Error, Link not found");
                 return null;
@@ -305,13 +303,8 @@ exports.update = (user, link) => {
             oldLink.imageUrl = link.imageUrl;
             oldLink.creationDate = link.creationDate;
 
-            oldLink.save()
-            .then((newLink) => {
-                return newLink;
-            })
-            .catch((err) => {
-                console.error(">> Error while saving Link: ", err);
-            })
+            await oldLink.save();
+            return oldLink;
         })
         .catch((err) => {
             console.error(">> Error, Link not found: ", err);

@@ -3,7 +3,7 @@ const Link = db.link;
 const Tag = db.tag;
 const User = db.user;
 
-//Create and save new Tag
+//Create and save new User
 exports.create = (user) => {
     return User.findOne({
         where: {
@@ -16,7 +16,7 @@ exports.create = (user) => {
             return null;
         }
         return User.create({
-            name: tag.name,
+            name: user.name,
             password: user.password,
         })
         .then((user) => {
@@ -61,21 +61,17 @@ exports.update = (oldUser,changedUser) => {
             password: oldUser.password,
         }
     })
-    .then((user) => {
+    .then(async (user) => {
         if (!user) {
             console.error(">> Error, User not found");
             return null;
         }
-        
+
         user.password = changedUser.password;
 
-        user.save()
-        .then((newUser) => {
-            return newUser;
-        })
-        .catch((err) => {
-            console.error(">> Error while saving User: ", err);
-        })
+        await user.save();
+        return user;
+    
     })
     .catch((err) => {
         console.error(">> Error, User not found: ", err);

@@ -57,8 +57,10 @@ router.post('/', async (req, res) => {
     }
 
     const tagsNames = [];
-    for (let tag of req.body.link.tags) {
-        tagsNames.push(tag.name);
+    if (req.body.link.tags) {
+        for (let tag of req.body.link.tags) {
+            tagsNames.push(tag.name);
+        }
     }
 
     const link = await LinkController.create(reqLink, reqUser);
@@ -77,7 +79,13 @@ router.post('/', async (req, res) => {
 //Update a Link
 router.put('/', async (req, res) => {
 
+    if (!req.body.link.id) {
+        res.status(400).json({ message: "Bad request", request: req.body});
+        return;
+    }
+
     const reqLink = {
+        id: req.body.link.id,
         name: req.body.link.name,
         url: req.body.link.url,
         imageUrl: req.body.link.imageUrl,
@@ -90,11 +98,13 @@ router.put('/', async (req, res) => {
     }
 
     const tagsNames = [];
-    for (let tag of req.body.link.tags) {
-        tagsNames.push(tag.name);
+    if (req.body.link.tags) {
+        for (let tag of req.body.link.tags) {
+            tagsNames.push(tag.name);
+        }
     }
 
-    const link = await LinkController.create(reqLink, reqUser);
+    const link = await LinkController.update(reqUser,reqLink);
     await LinkController.setSomeTagsByName(reqUser, reqLink.name, tagsNames);
 
     if (link) {
@@ -127,3 +137,5 @@ router.delete('/', async (req, res) => {
         res.status(500).json({message: "Internal Server Error"});
     }
 });
+
+module.exports = router;
